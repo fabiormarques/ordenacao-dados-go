@@ -55,19 +55,12 @@ func structuredData(data string) []Pessoa {
 	return pessoas
 }
 
-func orderByName(pessoas []Pessoa) []Pessoa {
+func ordering(pessoas []Pessoa) []Pessoa {
 	slices.SortFunc(pessoas,
 		func(p1, p2 Pessoa) int {
-			return cmp.Compare(strings.ToUpper(p1.nome), strings.ToUpper(p2.nome))
-		})
-
-	return pessoas
-}
-
-func orderByAge(pessoas []Pessoa) []Pessoa {
-	slices.SortFunc(pessoas,
-		func(p1, p2 Pessoa) int {
-			return cmp.Compare(p1.idade, p2.idade)
+			pess1 := p1.nome + strconv.Itoa(p1.idade)
+			pess2 := p2.nome + strconv.Itoa(p2.idade)
+			return cmp.Compare(pess1, pess2)
 		})
 
 	return pessoas
@@ -90,21 +83,14 @@ func main() {
 	defer recoverCustom()
 
 	if len(os.Args) != 3 {
-		panic("Informe os arquivos de entrada e saída de dados!\nExemplo: go run main.go <arquivo1> <arquivo2")
+		panic("Informe os arquivos de entrada e saída de dados!\nExemplo: go run main.go <arquivo1> <arquivo2>")
 	}
 
 	data := readContentInputFile(os.Args[1])
 
 	pessoas := structuredData(data)
 
-	fmt.Println()
-	fmt.Println(orderByAge(pessoas))
+	pessoas = ordering(pessoas)
 
 	writeOutput(pessoas, os.Args[2])
-
-	perssoasOrderByName := orderByName(pessoas)
-	writeOutput(perssoasOrderByName, "./arquivo-saida-nome.csv")
-
-	perssoasOrderByAge := orderByAge(pessoas)
-	writeOutput(perssoasOrderByAge, "./arquivo-saida-idade.csv")
 }
